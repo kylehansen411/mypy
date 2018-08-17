@@ -142,6 +142,8 @@ class Server:
 
     def serve(self) -> None:
         """Serve requests, synchronously (no thread or fork)."""
+        conn = None
+        command = ''
         try:
             sock = self.create_listening_socket()
             if self.timeout is not None:

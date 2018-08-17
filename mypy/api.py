@@ -50,9 +50,9 @@ def run(args: List[str]) -> Tuple[str, str, int]:
     new_stderr = StringIO()
     sys.stderr = new_stderr
 
+    exit_status = 0
     try:
         main(None, args=args)
-        exit_status = 0
     except SystemExit as system_exit:
         exit_status = system_exit.code
     finally:

@@ -419,6 +419,8 @@ class TypeChecker(NodeVisitor[None], CheckerPluginInterface):
         # At this point we should have set the impl already, and all remaining
         # items are decorators
 
+        inner_type = None
+
         # Compute some info about the implementation (if it exists) for use below
         impl_type = None  # type: Optional[CallableType]
         if defn.impl:

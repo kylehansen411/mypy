@@ -411,14 +411,13 @@ class TypeAnalyser(SyntheticTypeVisitor[Type], TypeAnalyzerPluginInterface):
                 variables = t.variables
             else:
                 variables = self.bind_function_type_variables(t, t)
-            ret = t.copy_modified(arg_types=self.anal_array(t.arg_types, nested=nested),
-                                  ret_type=self.anal_type(t.ret_type, nested=nested),
-                                  # If the fallback isn't filled in yet,
-                                  # its type will be the falsey FakeInfo
-                                  fallback=(t.fallback if t.fallback.type
-                                            else self.named_type('builtins.function')),
-                                  variables=self.anal_var_defs(variables))
-        return ret
+            return t.copy_modified(arg_types=self.anal_array(t.arg_types, nested=nested),
+                                   ret_type=self.anal_type(t.ret_type, nested=nested),
+                                   # If the fallback isn't filled in yet,
+                                   # its type will be the falsey FakeInfo
+                                   fallback=(t.fallback if t.fallback.type
+                                             else self.named_type('builtins.function')),
+                                   variables=self.anal_var_defs(variables))
 
     def visit_tuple_type(self, t: TupleType) -> Type:
         # Types such as (t1, t2, ...) only allowed in assignment statements. They'll

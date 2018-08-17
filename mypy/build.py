@@ -569,6 +569,8 @@ def load_plugins(options: Options, errors: Errors) -> Plugin:
     at least include the default plugin (it's last in the chain).
     """
     import importlib
+    module_name = ''
+    module = None
 
     default_plugin = DefaultPlugin(options)  # type: Plugin
     if not options.config_file:
@@ -954,6 +956,7 @@ class FindModuleCache:
     def _find_module(self, id: str, search_paths: SearchPaths,
                      python_executable: Optional[str]) -> Optional[str]:
         fscache = self.fscache
+        runtime_path = ''
 
         # If we're looking for a module like 'foo.bar.baz', it's likely that most of the
         # many elements of lib_path don't even have a subdirectory 'foo/bar'.  Discover
@@ -1151,6 +1154,7 @@ def read_protocol_cache(manager: BuildManager,
 def _load_json_file(file: str, manager: BuildManager,
                     log_sucess: str, log_error: str) -> Optional[Dict[str, Any]]:
     """A simple helper to read a JSON file with logging."""
+    data = ''
     try:
         with open(file, 'r') as f:
             data = f.read()
@@ -1960,6 +1964,7 @@ class State:
         assert self.meta is not None, "Internal error: this method must be called only" \
                                       " for cached modules"
         assert self.meta.deps_json
+        deps = None
         with open(self.meta.deps_json) as f:
             deps = json.load(f)
         # TODO: Assert deps file wasn't changed.
@@ -1968,6 +1973,7 @@ class State:
     def load_tree(self, temporary: bool = False) -> None:
         assert self.meta is not None, "Internal error: this method must be called only" \
                                       " for cached modules"
+        data = None
         with open(self.meta.data_json) as f:
             data = json.load(f)
         # TODO: Assert data file wasn't changed.

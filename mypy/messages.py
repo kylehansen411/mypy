@@ -377,6 +377,7 @@ class MessageBuilder:
         be quoted; callers who need to do post-processing of the strings before
         quoting them (such as prepending * or **) should use this.
         """
+        str1 = str2 = ''
         if bare:
             format_method = self.format_bare
         else:

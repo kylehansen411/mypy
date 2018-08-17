@@ -182,6 +182,7 @@ def load_python_module_info(module: str, interpreter: str) -> Tuple[str, Optiona
     cmd_template = '{interpreter} -c "%s"'.format(interpreter=interpreter)
     code = ("import importlib, json; mod = importlib.import_module('%s'); "
             "print(mod.__file__); print(json.dumps(getattr(mod, '__all__', None)))") % module
+    output_bytes = b''
     try:
         output_bytes = subprocess.check_output(cmd_template % code, shell=True)
     except subprocess.CalledProcessError:
@@ -208,11 +209,13 @@ def generate_stub(path: str,
                   include_private: bool = False
                   ) -> None:
 
+    data = b''
     with open(path, 'rb') as f:
         data = f.read()
     source = mypy.util.decode_python_encoding(data, pyversion)
     options = MypyOptions()
     options.python_version = pyversion
+    ast = None
     try:
         ast = mypy.parse.parse(source, fnam=path, module=module, errors=None, options=options)
     except mypy.errors.CompileError as e:
@@ -886,6 +889,7 @@ def main() -> None:
     if options.doc_dir:
         all_sigs = []  # type: Any
         all_class_sigs = []  # type: Any
+        func_sigs = []  # type: List[Tuple[str, str]]
         for path in glob.glob('%s/*.rst' % options.doc_dir):
             with open(path) as f:
                 func_sigs, class_sigs = parse_all_signatures(f.readlines())

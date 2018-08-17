@@ -245,6 +245,7 @@ class ExpressionChecker(ExpressionVisitor[Type]):
         return self.visit_call_expr_inner(e, allow_none_return=allow_none_return)
 
     def visit_call_expr_inner(self, e: CallExpr, allow_none_return: bool = False) -> Type:
+        node = None
         if isinstance(e.callee, NameExpr) and isinstance(e.callee.node, TypeInfo) and \
                 e.callee.node.typeddict_type is not None:
             # Use named fallback for better error messages.
@@ -1322,6 +1323,9 @@ class ExpressionChecker(ExpressionVisitor[Type]):
         Assumes all of the given targets have argument counts compatible with the caller.
         """
 
+        ret_type = None
+        infer_type = None
+
         arg_messages = self.msg if arg_messages is None else arg_messages
         matches = []         # type: List[CallableType]
         return_types = []    # type: List[Type]
@@ -1418,6 +1422,8 @@ class ExpressionChecker(ExpressionVisitor[Type]):
         Return a list of (<return type>, <inferred variant type>) if call succeeds for every
         item of the desctructured union. Returns None if there is no match.
         """
+        res = None
+        direct = None
         # Step 1: If we are already too deep, then stop immediately. Otherwise mypy might
         # hang for long time because of a weird overload call. The caller will get
         # the exception and generate an appropriate note message, if needed.
@@ -2095,6 +2101,10 @@ class ExpressionChecker(ExpressionVisitor[Type]):
     def check_boolean_op(self, e: OpExpr, context: Context) -> Type:
         """Type check a boolean operation ('and' or 'or')."""
 
+        left_map = right_map = None
+        restricted_left_type = None
+        right_type = None
+
         # A boolean operation can evaluate to either of the operands.
 
         # We use the current type context to guide the type inference of of
@@ -2147,6 +2157,7 @@ class ExpressionChecker(ExpressionVisitor[Type]):
             # The left operand is always the result
             return left_type
         else:
+            assert restricted_left_type
             return UnionType.make_simplified_union([restricted_left_type, right_type])
 
     def check_list_multiply(self, e: OpExpr) -> Type:
@@ -2958,6 +2969,7 @@ class ExpressionChecker(ExpressionVisitor[Type]):
         is True and this expression is a call, allow it to return None.  This
         applies only to this expression and not any subexpressions.
         """
+        typ = None
         if node in self.type_overrides:
             return self.type_overrides[node]
         self.type_context.append(type_context)

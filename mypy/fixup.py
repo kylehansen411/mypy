@@ -253,6 +253,7 @@ def lookup_qualified_stnode(modules: Dict[str, MypyFile], name: str,
                             quick_and_dirty: bool) -> Optional[SymbolTableNode]:
     head = name
     rest = []
+    mod = None
     while True:
         if '.' not in head:
             if not quick_and_dirty:

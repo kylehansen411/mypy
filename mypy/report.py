@@ -123,6 +123,7 @@ class LineCountReporter(AbstractReporter):
                 options: Options) -> None:
         # Count physical lines.  This assumes the file's encoding is a
         # superset of ASCII (or at least uses \n in its line endings).
+        physical_lines = -1
         with open(tree.path, 'rb') as f:
             physical_lines = len(f.readlines())
 
@@ -358,6 +359,7 @@ class LineCoverageReporter(AbstractReporter):
                 tree: MypyFile,
                 type_map: Dict[Expression, Type],
                 options: Options) -> None:
+        tree_source = []  # type: List[str]
         with open(tree.path) as f:
             tree_source = f.readlines()
 

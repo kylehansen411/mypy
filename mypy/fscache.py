@@ -229,6 +229,7 @@ class FileSystemCache:
         dirname, basename = os.path.split(path)
         dirname = os.path.normpath(dirname)
         # Check the fake cache.
+        data = b''
         if basename == '__init__.py' and dirname in self.fake_package_cache:
             data = b''
         else:

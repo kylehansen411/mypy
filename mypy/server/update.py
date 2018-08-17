@@ -199,6 +199,7 @@ class FineGrainedBuildManager:
         Returns:
             A list of errors.
         """
+        messages = []  # type: List[str]
         changed_modules = changed_modules + removed_modules
         removed_set = {module for module, _ in removed_modules}
         self.changed_modules = changed_modules
