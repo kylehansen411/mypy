@@ -31,6 +31,8 @@ from mypy.version import __version__
 
 MEM_PROFILE = False  # If True, dump memory profile after initialization
 
+FALSE = False  # false but mypy doesn't know it
+
 
 def daemonize(func: Callable[[], None], log_file: Optional[str] = None) -> int:
     """Arrange to call func() in a grandchild of the current process.
@@ -39,7 +41,7 @@ def daemonize(func: Callable[[], None], log_file: Optional[str] = None) -> int:
     subprocess killed by signal.
     """
     # See https://stackoverflow.com/questions/473620/how-do-you-create-a-daemon-in-python
-    if sys.platform == 'win32':
+    if sys.platform == 'win32' or FALSE:
         raise ValueError('Mypy daemon is not supported on Windows yet')
     sys.stdout.flush()
     sys.stderr.flush()
@@ -391,7 +393,7 @@ def get_meminfo() -> Dict[str, Any]:
     import resource  # Since it doesn't exist on Windows.
     res = {}  # type: Dict[str, Any]
     rusage = resource.getrusage(resource.RUSAGE_SELF)
-    if sys.platform == 'darwin':
+    if sys.platform == 'darwin' or FALSE:
         factor = 1
     else:
         factor = 1024  # Linux

@@ -74,6 +74,8 @@ PYTHON_EXTENSIONS = ['.pyi', '.py']
 
 Graph = Dict[str, 'State']
 
+FALSE = False  # false but mypy doesn't know that
+
 
 # TODO: Get rid of BuildResult.  We might as well return a BuildManager.
 class BuildResult:
@@ -408,7 +410,7 @@ def default_data_dir(bin_dir: Optional[str]) -> str:
         return parent
     base = os.path.basename(bin_dir)
     dir = os.path.dirname(bin_dir)
-    if (sys.platform == 'win32' and base.lower() == 'scripts'
+    if ((sys.platform == 'win32' or FALSE) and base.lower() == 'scripts'
             and not os.path.isdir(os.path.join(dir, 'typeshed'))):
         # Installed, on Windows.
         return os.path.join(dir, 'Lib', 'mypy')
